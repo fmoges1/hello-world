@@ -12,8 +12,8 @@ def fix_arrow_types(df):
     return df
 
 #df = fix_arrow_types(df.copy())
-#df['price'] = df['price'].astype(float)  # Add this before plotting
-#df['model_year'] = df['model_year'].astype(float)  # Also convert model_year to be safe
+df['price'] = df['price'].astype(float)  # Add this before plotting
+df['model_year'] = df['model_year'].astype(float)  # Also convert model_year to be safe
 
 # create a text header above the dataframe
 st.header('Data viewer') 
