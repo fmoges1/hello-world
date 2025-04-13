@@ -5,6 +5,9 @@ import plotly.express as px
 df = pd.read_csv('vehicles_us.csv')
 df['manufacturer'] = df['model'].apply(lambda x:x.split()[0])
 
+df['price'] = df['price'].astype(float)  # Add this before plotting
+df['model_year'] = df['model_year'].astype(float)  # Also convert model_year to be safe
+
 # create a text header above the dataframe
 st.header('Data viewer') 
 # display the dataframe with streamlit
