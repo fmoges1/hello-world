@@ -15,4 +15,5 @@ st.header('Vehicle types by manufacturer')
 fig = px.histogram(df, x='manufacturer', color='type')
 # display the figure with streamlit
 st.write(fig)
+#
 
