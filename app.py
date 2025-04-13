@@ -6,7 +6,8 @@ df = pd.read_csv('vehicles_us.csv')
 df['manufacturer'] = df['model'].apply(lambda x:x.split()[0])
 
 # Ensure price is numeric and handle missing values
-df['price'] = pd.to_numeric(df['price'], errors='coerce')  # Convert to float, invalid parsing becomes NaN
+#df['price'] = pd.to_numeric(df['price'], errors='coerce')  # Convert to float, invalid parsing becomes NaN
+df['price'] = df['price'].astype(float)  
 df = df.dropna(subset=['price'])  # Remove rows with NaN prices
 
 
