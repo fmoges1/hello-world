@@ -9,3 +9,10 @@ df['manufacturer'] = df['model'].apply(lambda x:x.split()[0])
 st.header('Data viewer') 
 # display the dataframe with streamlit
 st.dataframe(df)
+
+st.header('Vehicle types by manufacturer')
+# create a plotly histogram figure
+fig = px.histogram(df, x='manufacturer', color='type')
+# display the figure with streamlit
+st.write(fig)
+
