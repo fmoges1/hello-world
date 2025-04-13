@@ -2,63 +2,56 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+# Load and prepare data
 df = pd.read_csv('vehicles_us.csv')
-df['manufacturer'] = df['model'].apply(lambda x:x.split()[0])
+df['manufacturer'] = df['model'].apply(lambda x: x.split()[0])
 
-# Ensure price is numeric and handle missing values
-#df['price'] = pd.to_numeric(df['price'], errors='coerce')  # Convert to float, invalid parsing becomes NaN
-df['price'] = df['price'].astype(float)  
-df = df.dropna(subset=['price'])  # Remove rows with NaN prices
+# Convert numeric columns to compatible types
+numeric_cols = ['price', 'days_listed', 'model_year']
+for col in numeric_cols:
+    df[col] = pd.to_numeric(df[col], errors='coerce')  # Convert to float, set invalid as NaN
+df = df.dropna(subset=numeric_cols)  # Remove rows with missing numeric values
 
-
-# create a text header above the dataframe
-st.header('Data viewer') 
-# display the dataframe with streamlit
+# Data Viewer
+st.header('Data viewer')
 st.dataframe(df)
 
+# Vehicle Types by Manufacturer
 st.header('Vehicle types by manufacturer')
-# create a plotly histogram figure
 fig = px.histogram(df, x='manufacturer', color='type')
-# display the figure with streamlit
 st.write(fig)
-#
 
+# Condition vs Model Year
 st.header('Histogram of `condition` vs `model_year`')
 fig = px.histogram(df, x='model_year', color='condition')
 st.write(fig)
 
+# Price Comparison
 st.header('Compare price distribution between manufacturers')
-# get a list of car manufacturers
 manufac_list = sorted(df['manufacturer'].unique())
-# get user's inputs from a dropdown menu
+
 manufacturer_1 = st.selectbox(
-                              label='Select manufacturer 1', # title of the select box
-                              options=manufac_list, # options listed in the select box
-                              index=manufac_list.index('chevrolet') # default pre-selected option
-                              )
-# repeat for the second dropdown menu
+    'Select manufacturer 1',
+    options=manufac_list,
+    index=manufac_list.index('chevrolet')
+)
+
 manufacturer_2 = st.selectbox(
-                              label='Select manufacturer 2',
-                              options=manufac_list, 
-                              index=manufac_list.index('hyundai')
-                              )
-# filter the dataframe 
-mask_filter = (df['manufacturer'] == manufacturer_1) | (df['manufacturer'] == manufacturer_2)
-df_filtered = df[mask_filter]
+    'Select manufacturer 2',
+    options=manufac_list, 
+    index=manufac_list.index('hyundai')
+)
 
-# add a checkbox if a user wants to normalize the histogram
+# Filter and plot
+df_filtered = df[df['manufacturer'].isin([manufacturer_1, manufacturer_2])
 normalize = st.checkbox('Normalize histogram', value=True)
-if normalize:
-    histnorm = 'percent'
-else:
-    histnorm = None
 
-# create a plotly histogram figure
-fig = px.histogram(df_filtered,
-                      x='price',
-                      nbins=30,
-                      color='manufacturer',
-                      histnorm=histnorm,
-                      barmode='overlay')
-# display the figure with streamlit
+fig = px.histogram(
+    df_filtered,
+    x='price',
+    nbins=30,
+    color='manufacturer',
+    histnorm='percent' if normalize else None,
+    barmode='overlay'
+)
 st.write(fig)
