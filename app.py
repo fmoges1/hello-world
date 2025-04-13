@@ -17,3 +17,7 @@ fig = px.histogram(df, x='manufacturer', color='type')
 st.write(fig)
 #
 
+st.header('Histogram of `condition` vs `model_year`')
+fig = px.histogram(df, x='model_year', color='condition')
+st.write(fig)
+
