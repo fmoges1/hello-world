@@ -5,8 +5,15 @@ import plotly.express as px
 df = pd.read_csv('vehicles_us.csv')
 df['manufacturer'] = df['model'].apply(lambda x:x.split()[0])
 
-df['price'] = df['price'].astype(float)  # Add this before plotting
-df['model_year'] = df['model_year'].astype(float)  # Also convert model_year to be safe
+# Convert all numeric columns to PyArrow-friendly types
+def fix_arrow_types(df):
+    for col in df.select_dtypes(include=['int64']).columns:
+        df[col] = pd.to_numeric(df[col], errors='coerce').astype('Int64')  # Capital I - nullable integer
+    return df
+
+#df = fix_arrow_types(df.copy())
+#df['price'] = df['price'].astype(float)  # Add this before plotting
+#df['model_year'] = df['model_year'].astype(float)  # Also convert model_year to be safe
 
 # create a text header above the dataframe
 st.header('Data viewer') 
